@@ -3,51 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For You ❤️</title>
+    <title>For My Valentine ❤️</title>
     <style>
         body {
-            background-color: #ffebf0;
+            background-color: #ffe5ec; /* Aesthetic soft pink */
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
+            font-family: 'Poppins', sans-serif;
             overflow: hidden;
+            cursor: url('https://cur.cursors-4u.net/symbols/sym-1/sym49.cur'), auto;
         }
 
         .container {
             background: white;
-            padding: 3rem;
+            padding: 40px;
             border-radius: 30px;
-            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.5);
-            max-width: 400px;
+            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2);
+            text-align: center;
             z-index: 10;
-            border: 2px solid #ffccd5;
+            border: 3px solid #ffb3c1;
+            max-width: 400px;
         }
 
         h1 {
             color: #ff4d6d;
-            font-size: 2rem;
-            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            line-height: 1.4;
         }
 
         .buttons {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            position: relative;
+            gap: 15px;
         }
 
         button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 15px 35px;
+            font-size: 1.1rem;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s, background-color 0.3s;
-            font-weight: bold;
+            transition: all 0.3s ease;
+            font-weight: 600;
         }
 
         #yesBtn {
@@ -55,73 +56,49 @@
             color: white;
         }
 
-        #yesBtn:hover {
-            transform: scale(1.1);
-            background-color: #ff758f;
-        }
-
         #noBtn {
-            background-color: #ffccd5;
-            color: #ff4d6d;
+            background-color: #fb6f92;
+            color: white;
         }
 
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
 
+        /* Animation for the success message */
         .celebration h1 {
-            font-size: 2.5rem;
-            animation: bounce 1s infinite;
+            font-size: 2.2rem;
+            animation: heartBeat 1.2s infinite;
         }
 
-        .celebration p {
-            color: #ff758f;
-            font-weight: bold;
-            font-size: 1.2rem;
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Floating hearts for aesthetic */
+        /* Floating aesthetic hearts */
         .heart {
             position: absolute;
-            color: #ffb3c1;
+            top: -10%;
             font-size: 20px;
-            animation: float 5s linear infinite;
-            opacity: 0.6;
+            color: #ffb3c1;
+            user-select: none;
+            animation: fall linear infinite;
         }
 
-        @keyframes float {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        @keyframes fall {
+            to { transform: translateY(110vh); }
         }
     </style>
 </head>
-<body onclick="playMusic()">
+<body onclick="startMusic()">
 
-    <canvas id="fireworks"></canvas>
-    
     <audio id="bgMusic" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-        <source src="https://files.catbox.moe/5n5e84.mp3" type="audio/mpeg">
+        <source src="music.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container" id="mainCard">
         <h1 id="question">Will You be my Valentines? 💖</h1>
-        <div class="buttons" id="buttonGroup">
+        <div class="buttons">
             <button id="yesBtn">Yes</button>
             <button id="noBtn">No</button>
         </div>
@@ -129,7 +106,7 @@
 
     <div class="container hidden" id="successCard">
         <h1>Yay! ❤️</h1>
-        <p>Call me tonight to celebrate 📞✨</p>
+        <p style="color: #ff4d6d; font-size: 1.2rem;">Call me tonight to celebrate 📞✨</p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -140,60 +117,62 @@
         const successCard = document.getElementById('successCard');
         const music = document.getElementById('bgMusic');
 
-        // Function to start music on first interaction
-        function playMusic() {
-            music.play().catch(e => console.log("Music waiting for interaction"));
-        }
+        let musicStarted = false;
 
-        // Create random floating hearts
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 5000);
+        function startMusic() {
+            if (!musicStarted) {
+                music.play();
+                musicStarted = true;
+            }
         }
-        setInterval(createHeart, 500);
 
         // Logic for the No button
         noBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevents multiple music triggers
-            playMusic();
+            e.stopPropagation(); // Stops it from triggering the body click
+            startMusic();
             alert("wrong answer bumass, please try again 🙄");
+            
+            // Make Yes button grow bigger
             const currentScale = parseFloat(yesBtn.style.transform.replace('scale(', '').replace(')', '')) || 1;
-            yesBtn.style.transform = `scale(${currentScale + 0.3})`;
+            yesBtn.style.transform = `scale(${currentScale + 0.35})`;
         });
 
         // Logic for the Yes button
-        yesBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            playMusic();
+        yesBtn.addEventListener('click', () => {
+            startMusic();
             mainCard.classList.add('hidden');
             successCard.classList.remove('hidden');
-            
-            // Firework/Confetti Animation
-            var duration = 10 * 1000;
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            // Fireworks/Confetti logic
+            const duration = 15 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
             function randomInRange(min, max) {
               return Math.random() * (max - min) + min;
             }
 
-            var interval = setInterval(function() {
-              var timeLeft = animationEnd - Date.now();
+            const interval = setInterval(function() {
+              const timeLeft = animationEnd - Date.now();
+              if (timeLeft <= 0) return clearInterval(interval);
 
-              if (timeLeft <= 0) {
-                return clearInterval(interval);
-              }
-
-              var particleCount = 50 * (timeLeft / duration);
+              const particleCount = 50 * (timeLeft / duration);
               confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
               confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
             }, 250);
         });
+
+        // Floating hearts background
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '🌸';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+        setInterval(createHeart, 400);
     </script>
 </body>
 </html>
