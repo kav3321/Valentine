@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For My Valentine ❤️</title>
+    <title>For You ❤️</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;600&display=swap');
+
         body {
-            background-color: #ffe5ec; /* Aesthetic soft pink */
+            background-color: #fff0f3;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -14,41 +16,42 @@
             margin: 0;
             font-family: 'Poppins', sans-serif;
             overflow: hidden;
-            cursor: url('https://cur.cursors-4u.net/symbols/sym-1/sym49.cur'), auto;
         }
 
         .container {
             background: white;
-            padding: 40px;
-            border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2);
+            padding: 50px;
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(255, 77, 109, 0.15);
             text-align: center;
             z-index: 10;
-            border: 3px solid #ffb3c1;
-            max-width: 400px;
+            border: 4px solid #ffccd5;
+            max-width: 350px;
         }
 
         h1 {
             color: #ff4d6d;
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-            line-height: 1.4;
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
         }
 
         .buttons {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             gap: 15px;
+            align-items: center;
         }
 
         button {
-            padding: 15px 35px;
+            padding: 12px 40px;
             font-size: 1.1rem;
             border: none;
-            border-radius: 50px;
+            border-radius: 25px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, background-color 0.3s;
             font-weight: 600;
+            width: 100%;
         }
 
         #yesBtn {
@@ -57,47 +60,35 @@
         }
 
         #noBtn {
-            background-color: #fb6f92;
-            color: white;
+            background-color: #ffe5ec;
+            color: #ff4d6d;
         }
 
-        .hidden { display: none; }
+        .hidden { display: none !important; }
 
-        /* Animation for the success message */
-        .celebration h1 {
-            font-size: 2.2rem;
-            animation: heartBeat 1.2s infinite;
-        }
-
-        @keyframes heartBeat {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* Floating aesthetic hearts */
-        .heart {
+        /* Floating Hearts / Blossoms */
+        .heart-float {
             position: absolute;
-            top: -10%;
-            font-size: 20px;
             color: #ffb3c1;
-            user-select: none;
-            animation: fall linear infinite;
+            font-size: 20px;
+            animation: floatUp 4s linear infinite;
+            z-index: 1;
         }
 
-        @keyframes fall {
-            to { transform: translateY(110vh); }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
         }
     </style>
 </head>
-<body onclick="startMusic()">
+<body>
 
     <audio id="bgMusic" loop>
         <source src="music.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container" id="mainCard">
-        <h1 id="question">Will You be my Valentines? 💖</h1>
+        <h1>Will You be my Valentines? 💖</h1>
         <div class="buttons">
             <button id="yesBtn">Yes</button>
             <button id="noBtn">No</button>
@@ -106,73 +97,68 @@
 
     <div class="container hidden" id="successCard">
         <h1>Yay! ❤️</h1>
-        <p style="color: #ff4d6d; font-size: 1.2rem;">Call me tonight to celebrate 📞✨</p>
+        <p style="color: #ff4d6d; font-weight: 600;">Call me tonight to celebrate 📞✨</p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
-        const yesBtn = document.getElementById('yesBtn');
-        const noBtn = document.getElementById('noBtn');
         const mainCard = document.getElementById('mainCard');
         const successCard = document.getElementById('successCard');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
         const music = document.getElementById('bgMusic');
 
-        let musicStarted = false;
-
-        function startMusic() {
-            if (!musicStarted) {
-                music.play();
-                musicStarted = true;
-            }
-        }
-
         // Logic for the No button
-        noBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Stops it from triggering the body click
-            startMusic();
+        noBtn.addEventListener('click', () => {
             alert("wrong answer bumass, please try again 🙄");
             
-            // Make Yes button grow bigger
+            // Make the Yes button grow bigger
             const currentScale = parseFloat(yesBtn.style.transform.replace('scale(', '').replace(')', '')) || 1;
             yesBtn.style.transform = `scale(${currentScale + 0.35})`;
         });
 
         // Logic for the Yes button
         yesBtn.addEventListener('click', () => {
-            startMusic();
+            // 1. Play the song
+            music.play();
+
+            // 2. Switch the cards
             mainCard.classList.add('hidden');
             successCard.classList.remove('hidden');
+            
+            // 3. Firework/Confetti Animation
+            const end = Date.now() + 15 * 1000;
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ff4d6d', '#ffb3c1']
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ff4d6d', '#ffb3c1']
+                });
 
-            // Fireworks/Confetti logic
-            const duration = 15 * 1000;
-            const animationEnd = Date.now() + duration;
-            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-            function randomInRange(min, max) {
-              return Math.random() * (max - min) + min;
-            }
-
-            const interval = setInterval(function() {
-              const timeLeft = animationEnd - Date.now();
-              if (timeLeft <= 0) return clearInterval(interval);
-
-              const particleCount = 50 * (timeLeft / duration);
-              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-            }, 250);
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
         });
 
-        // Floating hearts background
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '🌸';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 5000);
-        }
-        setInterval(createHeart, 400);
+        // Background floating aesthetic
+        setInterval(() => {
+            const h = document.createElement('div');
+            h.classList.add('heart-float');
+            h.innerHTML = Math.random() > 0.5 ? '🌸' : '❤️';
+            h.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 4000);
+        }, 400);
     </script>
 </body>
 </html>
